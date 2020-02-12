@@ -124,3 +124,28 @@ Promise.all(coasters.map(coaster => Park.create(coaster.park).then(park => park.
     .then(findParks => Promise.all(findParks).then(coasters => coasters.map(coaster => Coaster.create(coaster))))
     .then(savedCoasters => Promise.all(savedCoasters).then(coasters => coasters.forEach(coaster => console.log(`Montaña rusa ${coaster.name} creada`))).then(() => mongoose.connection.close()))
     .catch(error => console.log('Error: ', error))
+
+
+
+mongoose
+    mongoose.connect(`mongodb://localhost/${dbtitle}`, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(x => {
+        console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
+    })
+    .catch(err => {
+        console.error('Error connecting to mongo', err)
+    });
+
+
+Coaster.deleteMany()
+    .then(() => {
+        return Coaster.create(coasters);
+    })
+    .then(() => {
+        console.log('the data was added correctly');
+        mongoose.connection.close();
+        process.exit(0);
+    })
